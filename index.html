@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暗算チャレンジ</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .centered {
+            text-align: center;
+        }
+        input {
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="centered">
+        <h1 id="equation"></h1>
+        <form id="answerForm">
+            <input type="number" id="answer" placeholder="答えを入力" required>
+            <button type="submit">答える</button>
+        </form>
+    </div>
+    
+    <audio id="music" autoplay>
+        <source src="Familie.mp3" type="audio/mp3">
+    </audio>
+
+    <script>
+        // 四則演算式を生成する関数
+        function generateEquation() {
+            const operators = ['+', '-', '*', '/'];
+            const randomNumber = () => Math.floor(Math.random() * 10) + 1; // 1〜10までのランダムな数字を生成
+            const randomOperator = () => operators[Math.floor(Math.random() * operators.length)];
+
+            const num1 = randomNumber();
+            const num2 = randomNumber();
+            const operator1 = randomOperator();
+
+            // ()を含めるために2つの式を生成
+            const num3 = randomNumber();
+            const operator2 = randomOperator();
+
+            // 計算式を生成
+            const equation = `(${num1} ${operator1} ${num2}) ${operator2} ${num3}`;
+            const correctAnswer = eval(equation); // 正解を計算
+
+            return { equation, correctAnswer };
+        }
+
+        // 初期設定
+        const { equation, correctAnswer } = generateEquation();
+        document.getElementById('equation').textContent = equation;
+
+        const music = document.getElementById('music');
+        const form = document.getElementById('answerForm');
+
+        // 答えが正しいか確認する処理
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // フォームの送信を防ぐ
+
+            const userAnswer = parseFloat(document.getElementById('answer').value);
+            
+            if (userAnswer === correctAnswer) {
+                music.pause(); // 音楽を止める
+                alert('正解です。');
+            } else {
+                alert('不正解です。');
+            }
+        });
+    </script>
+</body>
+</html>
